@@ -1,4 +1,4 @@
-const streamServer = require('arcgis-websockets');
+const streamServer = require('ntkog/arcgis-websockets-streamserver');
 
 const SERVICE_CONF = {
   name : "twitter",

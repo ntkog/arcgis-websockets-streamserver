@@ -1,5 +1,5 @@
 {
-  "name": "arcgis-websockets",
+  "name": "arcgis-websockets-streamserver",
   "version": "1.0.0",
   "description": "",
   "main": "subscribe_arcgis.js",
