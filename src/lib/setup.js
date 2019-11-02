@@ -27,8 +27,7 @@ const JSAPI_VERSION = process.argv[2] || "4.11";
 
 
 function _shouldChallenge(origin) {
-  return true;
-  //return !/arcgis\.com/.test(origin) || !/^(3\.[1-9][0-9]|4\.[1-8]?)$/.test(JSAPI_VERSION);
+  return !/arcgis\.com/.test(origin) || !/^(3\.[1-9][0-9]|4\.[1-8]?)$/.test(JSAPI_VERSION);
 }
 
 function _isFilterChallenge(obj) {
@@ -170,7 +169,7 @@ function _setupHTTPServer(serviceConf){
   router.get(`/arcgis/rest/info`, function (req, res) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.write(JSON.stringify({
           currentVersion: 10.5,
           fullVersion: "10.5.0",
