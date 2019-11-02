@@ -23,11 +23,12 @@ const JSAPI_VERSION = process.argv[2] || "4.11";
 var FIELDS_SCHEMA;
 
 function _shouldChallenge(origin) {
-  return !/arcgis\.com/.test(origin) || !/^(3\.[1-9][0-9]|4\.[1-8]?)$/.test(JSAPI_VERSION);
+  return true;
+  //return !/arcgis\.com/.test(origin) || !/^(3\.[1-9][0-9]|4\.[1-8]?)$/.test(JSAPI_VERSION);
 }
 
 function _isFilterChallenge(obj) {
-    return obj.hasOwnProperty("filter") && obj.filter.hasOwnProperty("outFields");
+    return obj.hasOwnProperty("filter"); // && obj.filter.hasOwnProperty("outFields");
 }
 
 function _udpateFieldsSchema(obj) {
@@ -197,13 +198,35 @@ function _setupSource(obj) {
   //console.log( `WS Server ready at [${conf.ws.client.wsUrl}/${BASE_URL}/subscribe]`);
   return function handle(stream, request) {
     console.log(request.headers.origin);
-    var serverRef = this;
     stream.binary = false;
     stream.socket.uuid = uuidv4();
     stream.socket.challenge = _shouldChallenge(request.headers.origin);
     console.log(`client [${stream.socket.uuid}] connected`);
 
-    var pipeline;
+    var pipeline = chain([
+      ...defaultPipeline({ geo : obj.geo, service : obj.service}),
+      data => {
+        return stream.socket.challenge ? data : null
+      },
+      data => {
+
+        return stream.socket.hasOwnProperty("filter")
+          ? streamServerFilter(data.value.attributes,stream.socket.filter)
+            ? data
+            : null
+          : data;
+      },
+      data => JSON.stringify(data.value)
+    ]);
+
+    pipeline.on("error", function(err){
+      console.error(err);
+    })
+
+    obj.pullStream
+      .pipe(pipeline)
+      .pipe(stream)
+
 
     stream.on('data', function(buf){
       let data = buf.toString();
@@ -238,30 +261,6 @@ function _setupSource(obj) {
       } catch(err) {
         console.log(`bad payload[${data}]`);
       }
-
-      pipeline = chain([
-        ...defaultPipeline({ geo : obj.geo, service : obj.service}),
-        data => {
-          return stream.socket.challenge ? data : null
-        },
-        data => {
-
-          return stream.socket.hasOwnProperty("filter")
-            ? streamServerFilter(data.value.attributes,stream.socket.filter)
-              ? data
-              : null
-            : data;
-        },
-        data => JSON.stringify(data.value)
-      ]);
-
-      pipeline.on("error", function(err){
-        console.error(err);
-      })
-
-      obj.pullStream
-        .pipe(pipeline)
-        .pipe(stream)
 
     });
     stream.on('close',function(){

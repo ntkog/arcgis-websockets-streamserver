@@ -1,7 +1,7 @@
-const streamServer = require('arcgis-websockets-streamserver');
+const streamServer = require('../index.js');
 
 const SERVICE_CONF = {
-  name : "twitter",
+  name : "test",
   out_sr : {
     wkid : 102100,
     latestWkid : 3857
@@ -9,7 +9,7 @@ const SERVICE_CONF = {
   port : process.env["NGROK"] ? 9000 : 9000,
   host : process.env["NGROK"]  || "localhost",
   protocol : process.env["NGROK"] ? "https" : "http",
-  wsUrl : "ws://localhost:8000"
+  wsUrl : "ws://localhost:8001"
 };
 
 // process
