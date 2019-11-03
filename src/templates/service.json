@@ -338,18 +338,41 @@
       },
       "labelingInfo" : [
         {
-          "type": "text",
-          "color": "white",
-          "haloColor": "black",
-          "haloSize": "1px",
-          "text": "You are here",
-          "xoffset": 3,
-          "yoffset": 3,
-          "font": {
-            "size": 12,
-            "family": "Josefin Slab",
-            "weight": "bold"
-          }
+          "name": "Custom",
+          "labelExpressionInfo": {
+            "expression": "$feature.codLinea + \"-\" + $feature.codBus"
+          },
+          "labelPlacement": "esriServerPointLabelPlacementAboveCenter",
+          "symbol": {
+            "type": "esriTS",
+            "color": [
+              51,
+              51,
+              51,
+              255
+            ],
+            "font": {
+              "family": "Arial",
+              "size": 9.75,
+              "weight": "bold"
+            },
+            "horizontalAlignment": "center",
+            "kerning": true,
+            "haloColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "haloSize": 0.75,
+            "rightToLeft": false,
+            "rotated": false,
+            "text": "",
+            "xoffset": 0,
+            "yoffset": 0,
+            "angle": 0
+          },
+          "useCodedValues": true
         }
       ]
 
